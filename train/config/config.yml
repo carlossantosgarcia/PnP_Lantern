@@ -1,0 +1,45 @@
+model:
+    model_name: "DnCNN"
+    DnCNN:
+        in_channels: 1
+        out_channels: 1
+        num_layers: 17
+        features: 64
+        kernel_size: 3
+        residual: true
+    Unet:
+        in_nc : 1
+        out_nc : 1
+        nc : [64, 128, 256, 512]
+        nb : 2
+        act_mode : "R"
+        downsample_mode : "strideconv"
+        upsample_mode : "convtranspose"
+data:
+    root: "../imagenet/"
+    dataset_name: "ImageNet"
+    noise_std: 20
+training:
+    batch_size: 40
+    lr: 0.00005
+    losses:
+        l1_loss:
+            weight: 1
+            active: false
+        mse:
+            weight: 1
+            active: true
+        jacobian_reg:
+            max_iter: 5
+            tol: 1.e-3
+            verbose: false
+            epsilon: 0.05
+            weight: 1.e-5
+            active: true
+    early_stopping:
+        min_delta: 0.0001
+        patience: 4
+        restore_best_weights: true
+    scheduler:
+        factor: 0.9
+        patience: 1
